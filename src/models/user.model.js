@@ -34,7 +34,7 @@ import bcrypt from "bcrypt"
         },
         watchHistory:[
             {
-            type:Schema.type.objectId,
+            type:Schema.Types.ObjectId,
             ref:"Video"
             }
         ],

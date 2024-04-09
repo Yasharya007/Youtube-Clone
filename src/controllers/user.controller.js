@@ -20,22 +20,30 @@ const registerUser= asyncHandler(async (req,res)=>{
     }
 
     // check if user is already exists
-    const existedUser=User.findOne({
+    const existedUser=await User.findOne({
         $or:[{username},{email}]
     })
     if(existedUser){throw new Error("User exist");}
 
     // check for images, check for avatar
     const avatarLocalPath=req.files?.avatar[0]?.path;
-    const coverImageLoacalPath=req.files?.coverImage[0]?.path;
+    let coverImageLoacalPath;
+    if(req.files && req.files.coverImage){
+        coverImageLoacalPath=req.files?.coverImage[0]?.path;
+    }
+    // const coverImageLoacalPath=req.files?.coverImage[0]?.path;
 
     if(!avatarLocalPath)throw new Error("Avatar file is req");
 
     // upload them to cloudinary
     const avatar=await uploadOnCloudinary(avatarLocalPath);
+    // let coverImage;
+    // console.log(coverImageLoacalPath);
     const coverImage=await uploadOnCloudinary(coverImageLoacalPath)
+
+    
     if(!avatar){
-        throw new Error("User exist");
+        throw new Error("avatar is required");
     }
 
      // create user object - create entry in db
@@ -71,6 +79,6 @@ const registerUser= asyncHandler(async (req,res)=>{
 //     res.status(200).json({
 //         message:"ok"
 //     })
-// }
+// } 
 
 export {registerUser} 
